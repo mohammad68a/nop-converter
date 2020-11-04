@@ -1,0 +1,46 @@
+﻿@model List<Rabani.DistinctProducts.Web.Models.Products.SelectProduct>
+@{
+    int rowIndex = -1;
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">اصلی</th>
+            <th scope="col">شناسه</th>
+            <th scope="col">کد محصول</th>
+            <th scope="col">نام محصول</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="background-color: yellow;">
+            <td colspan="3">
+                <strong># کد و نام کالای اصلی</strong>
+            </td>
+            <td>
+                <input type="text" id="inputMasterNewSku" name="inputMasterNewSku" value="" class="form-control" readonly />
+            </td>
+            <td>
+                <input type="text" id="inputMasterNewName" name="inputMasterNewName" value="" class="form-control" />
+            </td>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr id="row[@(++rowIndex)]" data-id="@item.Id" class="product-row">
+                <th scope="row">@(rowIndex + 1)</th>
+                <td>
+                    <input type="radio" name="inputPrimary" data-id="@item.Id" onchange="switchPrimary(@rowIndex, @item.Id)" />
+                    <input type="hidden" name="inputId" value="@item.Id" />
+                </td>
+                <td>@item.Id</td>
+                <td>
+                    <input type="text" id="inputSku[@rowIndex]" name="inputSku" value="@item.Sku" class="form-control" />
+                </td>
+                <td>
+                    <input type="text" id="inputName[@rowIndex]" name="inputName" value="@item.Name" class="form-control" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

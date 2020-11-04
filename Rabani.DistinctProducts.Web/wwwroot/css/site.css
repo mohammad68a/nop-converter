@@ -1,0 +1,139 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 12px;
+    direction: rtl;
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+.modal-footer {
+    justify-content: flex-start !important;
+}
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    font-family: 'Vazir', sans-serif !important;
+}
+
+input,
+button,
+select,
+optgroup,
+textarea {
+    font-size: 13px!important;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir.eot');
+    src: url('../fonts/Vazir.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir.woff2') format('woff2'), url('../fonts/Vazir.woff') format('woff'), url('../fonts/Vazir.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Bold.eot');
+    src: url('../fonts/Vazir-Bold.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Bold.woff2') format('woff2'), url('../fonts/Vazir-Bold.woff') format('woff'), url('../fonts/Vazir-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Light.eot');
+    src: url('../fonts/Vazir-Light.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Light.woff2') format('woff2'), url('../fonts/Vazir-Light.woff') format('woff'), url('../fonts/Vazir-Light.ttf') format('truetype');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Medium.eot');
+    src: url('../fonts/Vazir-Medium.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Medium.woff2') format('woff2'), url('../fonts/Vazir-Medium.woff') format('woff'), url('../fonts/Vazir-Medium.ttf') format('truetype');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Thin.eot');
+    src: url('../fonts/Vazir-Thin.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Thin.woff2') format('woff2'), url('../fonts/Vazir-Thin.woff') format('woff'), url('../fonts/Vazir-Thin.ttf') format('truetype');
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Black.eot');
+    src: url('../fonts/Vazir-Black.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Black.woff2') format('woff2'), url('../fonts/Vazir-Black.woff') format('woff'), url('../fonts/Vazir-Black.ttf') format('truetype');
+    font-weight: 900;
+}
+
+/*---------------------------------- End of fonts ---------------------------------- */
+
+.k-grid {
+    font-family: 'Vazir' !important;
+    font-size: 12px;
+}
+
+    .k-grid td {
+        line-height: 2em;
+    }
+
+/*---------------------------------- Validation Erros ---------------------------------- */
+.validation-summary-valid {
+    display: none;
+}

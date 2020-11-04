@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewData["Title"] = "محصولات";
+}
+@section scripts {
+    <script src="~/js/controllers/product-index.js" asp-append-version="true"></script>
+}
+
+@using Rabani.DistinctProducts.Web.Models.Products
+<div class="k-rtl">
+    <kendo-grid name="grid" width="100%" height="650" on-change="onChange">
+        <datasource type="DataSourceTagHelperType.Ajax" page-size="20">
+            <transport>
+                <read url="@Url.Action("GetData", "Products")" />
+            </transport>
+            <schema>
+                <model id="@nameof(ProductItem.Id)" />
+            </schema>
+        </datasource>
+        <columns>
+            <column selectable="true" width="50" />
+            <column field="@nameof(ProductItem.Id)" title="شناسه محصول" width="70">
+                <filterable enabled="false"></filterable>
+            </column>
+            <column field="@nameof(ProductItem.ImageBase64)" title="تصویر" width="125"
+                    template="<img width='100' src='data:image/png;base64,#=ImageBase64#' />">
+                <filterable enabled="false"></filterable>
+                <sortable enabled="false"></sortable>
+            </column>
+            <column field="@nameof(ProductItem.ProductName)" title="نام محصول" />
+            <column field="@nameof(ProductItem.ProductCode)" title="کد محصول" width="150" />
+            <column field="@nameof(ProductItem.Price)" title="قیمت" width="100" />
+            <column field="@nameof(ProductItem.Stock)" title="موجودی" width="100" />
+            <column field="@nameof(ProductItem.TypeName)" title="نوع" width="100" />
+            <column field="@nameof(ProductItem.IsPublish)" title="انتشار" width="100" template="<span class='k-icon #if(IsPublish) {# k-i-check-circle #} else {# k-i-minus-outline #}#'></span>" />
+        </columns>
+        <groupable enabled="false">
+            <messages empty="آیتمی را جهت گروهبندی به اینجا بکشید..." />
+        </groupable>
+        <scrollable enabled="true" />
+        <sortable enabled="true" />
+        <pageable enabled="true" page-sizes-enabled="true" page-size="20" page-sizes="new[] { 10, 20, 50, 100, 200 }">
+        </pageable>
+        <filterable enabled="true">
+            <operators>
+                <string startswith="شروع شود با" endswith="خاتمه یابد با" contains="حاوی" eq="برابر باشد با" isnotnull="پوچ نباشد" isnull="پوچ باشد" isempty="خالی باشد" isnotempty="خالی نباشد" />
+                <number eq="برابر باشد با" isnull="پوچ باشد" isnotnull="پوچ نباشد"  />
+            </operators>
+            <messages clear="حذف فیلتر" and="و" or="یا" info="جستجو" filter="فیلتر" title="عبارت مورد جستجو" />
+        </filterable>
+    </kendo-grid>
+</div>
+
+<div>
+    <button id="button-create" class="btn btn-primary disabled">
+        <i class="fa fa-home"></i>
+        <span>انتخاب این محصولات</span>
+    </button>
+</div>
+
+<partial name="_Modal" />
