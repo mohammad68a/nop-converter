@@ -1,6 +1,7 @@
 ﻿using Rabani.DistinctProducts.Web.Entities;
 using Rabani.DistinctProducts.Web.Extensions;
 using Rabani.DistinctProducts.Web.Mappings.Models;
+using Rabani.DistinctProducts.Web.Models;
 using Rabani.DistinctProducts.Web.Models.Products;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,13 @@ namespace Rabani.DistinctProducts.Web.Mappings.Factories
 
             // TierPrice
             AddTierPrice(newProduct, masterProduct.TierPrice);
+        }
+
+        public static Dictionary<int, string> GetProductIdAndFileName(string[] fileNames)
+        {
+            return fileNames
+                    .Select(fileName => new KeyValuePair<int, string>(int.Parse(fileName.Split('-')[0]), fileName))
+                    .ToDictionary(x => x.Key, x => x.Value);
         }
 
         private static void AddTierPrice(Product newProduct, ICollection<TierPrice> tierPrice)

@@ -6,6 +6,9 @@ namespace Rabani.DistinctProducts.Web.Models.Products
     {
         public int Id { get; set; }
 
+        [Display(Name = "شناسه محصول جدید")]
+        public int? RecoveryProductId { get; set; }
+
         [Display(Name = "تصویر محصول")]
         public string ImageBase64 { get; set; }
 

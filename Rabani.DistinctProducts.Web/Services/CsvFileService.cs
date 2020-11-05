@@ -1,16 +1,19 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Rabani.DistinctProducts.Web.Services
 {
     public interface ICsvFileService
     {
         void CreateFile<T>(List<T> records, string fileName);
-        IEnumerable<T> ReadFile<T, TMapProfile>(string fileName) where TMapProfile : ClassMap;
+        List<T> ReadFile<T, TMapProfile>(string fileName) where TMapProfile : ClassMap;
+        string[] GetFileNamesInPath();
     }
 
     public class CsvFileService : ICsvFileService
@@ -35,12 +38,27 @@ namespace Rabani.DistinctProducts.Web.Services
             csv.WriteRecords(records);
         }
         
-        public IEnumerable<T> ReadFile<T, TMapProfile>(string fileName) where TMapProfile : ClassMap
+        public List<T> ReadFile<T, TMapProfile>(string fileName) where TMapProfile : ClassMap
         {
-            using var reader = new StreamReader(Path.Combine(CSV_PATH, fileName));
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            csv.Configuration.RegisterClassMap<TMapProfile>();
-            return csv.GetRecords<T>();
+            var result = new List<T>();
+            using (var reader = new StreamReader(Path.Combine(CSV_PATH, fileName)))
+            {
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    csv.Configuration.RegisterClassMap<TMapProfile>();
+                    result = csv.GetRecords<T>().ToList();
+                }
+            }
+            return result;
+        }
+
+        public string[] GetFileNamesInPath()
+        {
+            CheckCsvFolderToCreate(CSV_PATH);
+            var result = new List<string>();
+            foreach (var file in Directory.GetFiles(CSV_PATH, "*.csv"))
+                result.Add(Path.GetFileName(file));
+            return result.ToArray();
         }
     }
 }

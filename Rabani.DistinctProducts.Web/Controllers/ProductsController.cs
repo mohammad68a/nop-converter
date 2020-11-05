@@ -2,10 +2,13 @@
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Rabani.DistinctProducts.Web.Constants;
 using Rabani.DistinctProducts.Web.Enums;
 using Rabani.DistinctProducts.Web.Extensions;
 using Rabani.DistinctProducts.Web.Mappings.Factories;
+using Rabani.DistinctProducts.Web.Mappings.Models;
 using Rabani.DistinctProducts.Web.Models;
+using Rabani.DistinctProducts.Web.Models.Mappings;
 using Rabani.DistinctProducts.Web.Models.Products;
 using Rabani.DistinctProducts.Web.Services;
 using System;
@@ -42,6 +45,7 @@ namespace Rabani.DistinctProducts.Web.Controllers
                 ProductCode = product.Sku,
                 IsPublish = product.Published,
                 Stock = product.StockQuantity,
+                RecoveryProductId = product.RecoveryProductId,
                 QuantityType = product.StockQuantityType.ToString(),
                 TypeName = ((ProductType)product.ProductTypeId).GetDisplayName(),
                 ImageBase64 = product.ProductPictureMapping.FirstOrDefault().Picture.PictureBinary.BinaryData.BinaryToBase64String(),
@@ -76,19 +80,50 @@ namespace Rabani.DistinctProducts.Web.Controllers
 
             await _productService.AddFeaturesToMasterProductAsync(newProductId, model.MasterProductId, model.SpecificProducts);
             
-            //var csvList = ProductFactory.GetNewProductMappingsList(newProductId, model.MasterProductId, model.SpecificProducts.Select(s => s.ProductId).ToArray());
+            var csvList = ProductFactory.GetNewProductMappingsList(newProductId, model.MasterProductId, model.SpecificProducts.Select(s => s.ProductId).ToArray());
 
-            //_csvFileService.CreateFile(csvList, $"{Guid.NewGuid():N}.csv");
+            _csvFileService.CreateFile(csvList, $"{newProductId}-{Guid.NewGuid():N}.csv");
 
-            return Ok(new { baseUrl = _configuration.GetValue<string>("AdminPanelUrl"), newProductId });
+            var redirectPageUrl = _configuration.GetValue<string>(AppSettingKeys.ProductViewPageRoute).Replace(AppSettingKeys.IdParam, $"{newProductId}");
+
+            return Ok(new { redirectPageUrl, newProductId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> New()
+        {
+            var csvFileNames = _csvFileService.GetFileNamesInPath();
+
+            var items = ProductFactory.GetProductIdAndFileName(csvFileNames);
+
+            var model = await _productService.GetProductToConfirmsListAsync(items, _configuration.GetValue<string>(AppSettingKeys.ProductViewPageRoute));
+
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Confirm(NewProductConfirm model)
+        public async Task<IActionResult> Confirm(FileSetToConfirm model)
         {
-            await _productService.UpdateRecoveryProductIdAsync(model.SpecificProductIds, model.NewProductId);
+            if (string.IsNullOrEmpty(model.CsvFileName) || string.IsNullOrWhiteSpace(model.CsvFileName))
+            {
+                return BadRequest("نام فایل ارسال نشده است!");
+            }
 
-            await _productService.UpdateProductPublishStatusAsync(model.NewProductId, true);
+            if (!int.TryParse(model.CsvFileName.Split('-')[0], out int newProductId))
+            {
+                return BadRequest("نام فایل ارسال شده معتبر نمی باشد!");
+            }
+
+            var products = _csvFileService.ReadFile<ChangeIdProductModel, ProductCsvFileMap>(model.CsvFileName);
+
+            if (!products?.Any() ?? false)
+            {
+                return BadRequest("ایتمی یافت نشده!");
+            }
+
+            await _productService.UpdateRecoveryProductIdAsync(products.Select(s => s.OldProductId).ToArray(), newProductId, !model.IsPublish);
+
+            await _productService.UpdateProductPublishStatusAsync(newProductId, model.IsPublish);
 
             return Ok();
         }

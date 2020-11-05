@@ -1,8 +1,10 @@
 ﻿using Kendo.Mvc.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Rabani.DistinctProducts.Web.Constants;
 using Rabani.DistinctProducts.Web.Entities;
 using Rabani.DistinctProducts.Web.Mappings.Factories;
+using Rabani.DistinctProducts.Web.Models;
 using Rabani.DistinctProducts.Web.Models.Products;
 using System;
 using System.Collections.Generic;
@@ -17,11 +19,12 @@ namespace Rabani.DistinctProducts.Web.Services
         Task<int> CloneProductAsync(int productId, string newSku, string newName);
         IQueryable<Product> GetAsNoTracking();
         Task<List<Product>> GetByProductIdsAsync(int[] ids);
+        Task<List<ProductToConfirm>> GetProductToConfirmsListAsync(Dictionary<int, string> productKeys, string viewPageUrl);
         Task<Product> GetFirstOrDefaultAsync(int id);
         Task<Product> GetFirstOrDefaultWithIncludesAsync(int id);
         Task<Product> GetSingleOrDefaultAsync(string productSku);
         Task UpdateProductPublishStatusAsync(int productId, bool isPublish);
-        Task UpdateRecoveryProductIdAsync(int[] specificProductIds, int newProductId);
+        Task UpdateRecoveryProductIdAsync(int[] specificProductIds, int newProductId, bool isPublish);
     }
 
     public class ProductService : IProductService, IDisposable
@@ -163,7 +166,7 @@ namespace Rabani.DistinctProducts.Web.Services
             return GetAsNoTracking().Where(w => w.Sku == productSku).SingleOrDefaultAsync();
         }
 
-        public Task UpdateRecoveryProductIdAsync(int[] specificProductIds, int newProductId)
+        public Task UpdateRecoveryProductIdAsync(int[] specificProductIds, int newProductId, bool isPublish)
         {
             var products = _context.Product
                     .Where(w => specificProductIds.Contains(w.Id))
@@ -171,7 +174,7 @@ namespace Rabani.DistinctProducts.Web.Services
 
             foreach (var product in products)
             {
-                product.Published = false;
+                product.Published = isPublish;
 
                 product.RecoveryProductId = newProductId;
             }
@@ -186,6 +189,32 @@ namespace Rabani.DistinctProducts.Web.Services
             product.Published = isPublish;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ProductToConfirm>> GetProductToConfirmsListAsync(Dictionary<int, string> productKeys, string viewPageUrl)
+        {
+            var productIds = productKeys.Select(s => s.Key).ToArray();
+
+            var products = await GetAsNoTracking().Where(w => productIds.Contains(w.Id)).ToListAsync();
+
+            var result = new List<ProductToConfirm>();
+
+            foreach (KeyValuePair<int, string> item in productKeys)
+            {
+                var product = products.FirstOrDefault(p => p.Id == item.Key);
+                if (product == null)
+                    continue;
+
+                result.Add(new ProductToConfirm
+                {
+                    ProductId = item.Key,
+                    CsvFileName = item.Value,
+                    ProductName = product.Name,
+                    ProductPageUrl = viewPageUrl.Replace(AppSettingKeys.IdParam, item.Key.ToString()),
+                });
+            }
+
+            return result;
         }
     }
 }

@@ -56,23 +56,8 @@ $(function () {
                 Swal.fire('خطا', e.responseText, 'error')
             },
             success: function (res) {
-                var link = '<a href="' + res.baseUrl + '/Admin/Product/Edit/' + res.newProductId + '" target="_blank">' + res.newProductId + '</a>';
-                Swal.fire({
-                    title: 'تایید میشود؟',
-                    text: 'محصول جدید با کد ' + link + ' ایجاد گردید.',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'تایید محصول جدید',
-                    cancelButtonText: 'انصراف'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.post("/products/confirm", { specificProductIds: selectedProductIds, newProductId: newProductId }, function () {
-                            Swal.fire('موفقیت آمیز!', 'محصول با موفقیت تایید گردید!', 'success')
-                        })
-                    }
-                })
+                var link = '<a href="' + res.redirectPageUrl + '" target="_blank">' + res.newProductId + '</a>';
+                Swal.fire('موفقیت آمیز', 'محصول جدید با کد ' + link + ' ایجاد گردید.', 'success')
             },
             complete: function () {
                 $("#modal").modal('toggle');

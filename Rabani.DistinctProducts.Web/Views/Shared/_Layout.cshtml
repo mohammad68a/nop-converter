@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - پروژه یکی کردن محصولات </title>
     <link href="~/css/rtl/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/datatables.min.css" rel="stylesheet" />
 
     <link href="~/css/kendo.bootstrap-v4.min.css" rel="stylesheet" />
     <script src="~/js/jquery.min.js"></script>
@@ -31,7 +32,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">خانه</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">محصولات</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">لیست تمام محصولات</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="New">محصولات جدید</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">حریم خصوصی</a>
@@ -54,6 +58,7 @@
     </footer>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/datatables.min.js"></script>
     <script src="~/js/sweetalert2.all.min.js"></script>
     <script src="~/js/kendo.all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

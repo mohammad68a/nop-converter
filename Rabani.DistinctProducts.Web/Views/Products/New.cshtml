@@ -1,0 +1,43 @@
+﻿@model List<ProductToConfirm>
+@{
+    int rowNumber = 0;
+    ViewData["Title"] = "محصولات جدید";
+}
+
+@section scripts {
+    <script src="~/js/controllers/product-new.js" asp-append-version="true"></script>
+}
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام محصول</th>
+                <th scope="col">شناسه فایل</th>
+                <th scope="col">عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@(++rowNumber)</th>
+                        <td><a href="@item.ProductPageUrl" target="_blank">@item.ProductName</a></td>
+                        <td>@item.CsvFileName</td>
+                        <td>
+                            <button type="button" name="buttonConfirm" data-pid="@item.ProductId" data-csv="@item.CsvFileName" class="btn btn-outline-primary">تایید محصول</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4"><span class="text-danger text-center">محصولی جهت نمایش وجود ندارد....</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
